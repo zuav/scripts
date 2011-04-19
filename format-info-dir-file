@@ -1,0 +1,3 @@
+#!/bin/sh
+mv /usr/share/info/dir /usr/share/info/dir.orig
+cat /usr/share/info/dir.orig | awk -f ~/src/scripts/format-info-dir-file.awk > /usr/share/info/dir

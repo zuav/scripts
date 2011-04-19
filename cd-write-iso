@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# $1 -- pathname of the iso image file
+#
+/usr/bin/wodim driveropts=burnfree -v -data $1

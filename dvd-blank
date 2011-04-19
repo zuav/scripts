@@ -1,0 +1,2 @@
+#!/bin/sh
+growisofs -Z /dev/dvd=/dev/zero

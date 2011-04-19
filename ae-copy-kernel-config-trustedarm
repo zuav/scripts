@@ -1,0 +1,2 @@
+#!/bin/sh
+scp ~/src/linux-2.6.34.7-xen/trustedarm-linux-defconfig build3:/home/zuav/src/trustedarm/recipes/linux/files/x86_64-generic/

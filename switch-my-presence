@@ -1,0 +1,97 @@
+#!/bin/bash
+#
+# $Id: switch-my-presence 156 2007-04-20 12:54:36Z zaufi $
+#
+# Just run it! :)
+# (first time it will aks u about your account ;))
+#
+
+self=`basename $0`
+config=~/.timetrack
+cookie_file=`mktemp -t $self.XXXXXXXXXX` || exit 1
+status_file=`mktemp -t $self.XXXXXXXXXX` || exit 1
+is_KDE=`ps ax | grep kdesktop | grep -v grep`
+
+function show_msg()
+{
+    local msg=$1
+    if test -n "$is_KDE"; then
+	kdialog --passivepopup "$msg" 3 &
+    else
+	echo "$msg"
+    fi
+}
+
+function show_current_status()
+{
+    local status_file=$1
+    local msg=$2
+    current=`cat ${status_file} \
+      | grep 'Your current status is' \
+      | sed 's,.*<B>\(.*\)</B>,\1,i'`
+    if test -n "$current"; then
+	show_msg "$msg $current"
+    else
+	show_msg "*** Error: Parse error :("
+    fi
+}
+
+function reconfigure()
+{
+    if  test -n "`ps ax | grep kdesktop | grep -v grep`"; then
+        user=`kdialog --inputbox 'Please specify your user name' --title 'Setup your configuration 1/3'`
+	pass=`kdialog --password 'Please specify your password' --title 'Setup your configuration 2/3'`
+	timetrack_url=`kdialog --inputbox 'Please specify Timetrack URL' \
+	    'http://timetrack-stana.intermedia.net.ru/index.phtml' \
+	    --title 'Setup your configuration 3/3'`
+	if test -n "$user" -a -n "$pass" -a -n "$timetrack_url"; then
+	    echo "user=$user" > $config
+	    echo "pass=$pass" >> $config
+	    echo "timetrack_url=$timetrack_url" >> $config
+	else
+	    echo "*** Error: Invalid input"
+	    exit 1
+	fi
+    else
+	echo "*** Error: Only KDE supported ;("
+	exit 1
+    fi
+}
+
+# Read config
+if test -f $config; then
+    . $config
+else
+    if  test -n "$is_KDE"; then
+	reconfigure
+    else
+        echo "*** Error: No config file found!"
+        exit 1
+    fi
+fi
+# Validate it
+if test -z "$user" -o -z "$pass" -o -z "$timetrack_url"; then
+    echo "*** Error: Bad config file!"
+    exit 1
+fi
+
+
+# Login phase
+wget --post-data "auth_login=${user}&auth_pwd=${pass}" \
+     --keep-session-cookies \
+     --save-cookies ${cookie_file} \
+     --output-document ${status_file} \
+     -q ${timetrack_url}
+
+show_current_status $status_file "Your current status is"
+
+# Switch phase
+wget --load-cookies ${cookie_file} \
+     --post-data 'action=changestatus&CRMNO=0&mail=nomail' \
+     --output-document ${status_file} \
+     -q ${timetrack_url}
+
+show_current_status $status_file "Switched it to"
+
+# Cleanup
+rm -f ${cookie_file} ${status_file}

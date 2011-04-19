@@ -1,0 +1,22 @@
+#!/usr/bin/env escript
+%% -*- Erlang -*-
+main([WpName, RelFileTemplate, WpVer]) ->
+    code:add_path("/usr/local/lib/yxa/ebin"),
+    {ok, [{release, {"wp", _}, {erts, _}, Apps}|_]} = file:consult(RelFileTemplate),
+    ErtsVer = erlang:system_info(version),
+    [application:load(A) || {A, _} <- Apps],
+    LoadedApps = application:loaded_applications(),
+    F = fun(A) -> {A, _, Ver} = lists:keyfind(A, 1, LoadedApps), {A, Ver} end,
+    AppsVers = [F(A) || {A, _} <- Apps],
+    Release = {release, {"wp", WpVer}, {erts, ErtsVer}, AppsVers},
+    RelFile = "../ebin/wp.rel",
+    unconsult(RelFile, [Release]),
+    EbinDir = "../ebin",
+    Name = EbinDir ++ "/" ++ WpName,
+    systools:make_script(Name, [no_module_tests, {path, [EbinDir]}, {outdir, EbinDir}]).
+
+unconsult(File, L) ->
+    {ok, S} = file:open(File, write),
+    lists:foreach(fun(X) -> io:format(S, "~p.~n", [X]) end, L),
+    file:close(S).
+

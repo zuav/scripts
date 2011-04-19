@@ -1,0 +1,23 @@
+#!/usr/bin/env escript
+%% -*- Erlang -*-
+
+main([EbinDir, DepFile, ErlFile|IncludeDirs]) ->
+    {ok, L} = epp:parse_file(ErlFile, IncludeDirs, []),
+    RDL = lists:foldl(fun(E, Acc) -> is_include_file(E, Acc) end, [], L),
+    %% first element is FileName itself
+    [_|DL] = lists:reverse(RDL),
+    {ok, IoDevice} = file:open(DepFile, [write]),
+    ok = io:format(IoDevice, "~s/~s.beam ~s : ~s", [EbinDir, filename:basename(ErlFile, ".erl"), DepFile, ErlFile]),
+    print_dependencies(IoDevice, DL).
+
+is_include_file({attribute, 1, file, {Name, 1}}, Acc) ->
+    [Name | Acc];
+is_include_file(_, Acc) ->
+    Acc.
+
+print_dependencies(IoDevice, []) ->
+    ok = io:format(IoDevice, "~n", []);
+print_dependencies(IoDevice, [H|T]) ->
+    io:format(IoDevice, " \\~n    ~s", [H]),
+    print_dependencies(IoDevice, T).
+

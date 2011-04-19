@@ -1,0 +1,5 @@
+#!/bin/sh
+scp build3:/home/zuav/src/trustedarm/tmp/work/x86_64-altell-linux/tami-git-r7/image/usr/bin/tami /tmp/
+mount /media/flash
+cp /tmp/tami /media/flash/zuav/
+umount /media/flash
