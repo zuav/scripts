@@ -22,8 +22,8 @@ BEGIN {
 
 /<\/binary>/ {
 
-    print pic_data > file_name ".txt"
-#    print pic_data | "/usr/bin/base64 -d - > " file_name;
+#    print pic_data > file_name ".txt"
+    print pic_data | "/usr/bin/base64 -d - > " file_name;
 
     file_name = "";
     in_binary = 0;
