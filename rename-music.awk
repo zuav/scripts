@@ -13,14 +13,16 @@ BEGIN {
 {
     oldname = $0;
 
-    gsub(/\&/,  "\\\\&", oldname);
-    gsub(/'/,  "\\'", oldname);
-    gsub(/\(/, "\\(", oldname);
-    gsub(/\)/, "\\)", oldname);
-    gsub(/ /,  "\\ ", oldname);
+    gsub(/\&/, "\\\\&", oldname);
+    gsub(/`/,  "\\`",   oldname);
+    gsub(/'/,  "\\'",   oldname);
+    gsub(/\(/, "\\(",   oldname);
+    gsub(/\)/, "\\)",   oldname);
+    gsub(/ /,  "\\ ",   oldname);
     newname = oldname;
     gsub(/\.\//, "",    newname);
     gsub(/\//,   "-",   newname);
+    gsub(/`/,    "'",   newname);
     newname = dir "/" sprintf("%03d-", ordnum) newname ;
     ordnum++;
 
