@@ -48,12 +48,12 @@ else
     cp -r /tmp/$NDK_DIR /var/tmp
 fi
 
-cd /tmp/$NDK_DIR/release
+cd /tmp/$NDK_DIR/
 PKG_DIR=`ls *.tar.bz2 | awk '{ split($0, a, "-"); print a[1] "-" a[2] "-" a[3]; }'`
 
 mkdir /tmp/$NDK_DIR/package
 cd /tmp/$NDK_DIR/package
-tar xf ../release/android-ndk-*-linux-x86.tar.bz2
+tar xf ../android-ndk-*-linux-x86.tar.bz2
 cd /tmp/$NDK_DIR/package/$PKG_DIR
 ./tests/standalone/run-all.sh
 
