@@ -1,2 +1,0 @@
-#!/bin/sh
-growisofs -Z /dev/dvd=$1

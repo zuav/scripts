@@ -1,4 +1,0 @@
-#!/bin/sh
-#
-#
-scp $1 build3:/home/zuav/src/trustedarm/recipes/linux/files/x86_64-generic/trustedarm-linux-defconfig

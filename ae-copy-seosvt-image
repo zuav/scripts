@@ -1,7 +1,0 @@
-#!/bin/sh
-umount /media/flash
-scp build3:/home/zuav/src/seosvt/tmp/deploy/images/seosvt-installer-x86_64-generic.img /tmp/
-dd if=/tmp/seosvt-installer-x86_64-generic.img of=/dev/sdb bs=1M oflag=direct
-sync
-sync
-sync

@@ -1,5 +1,0 @@
-#!/bin/sh
-umount /media/flash
-mount /media/flash
-scp build3:/home/zuav/src/trustedarm/tmp/deploy/images/trustedarm-firmware.img /media/flash
-umount /media/flash

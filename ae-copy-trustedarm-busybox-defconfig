@@ -1,4 +1,0 @@
-#!/bin/sh
-#
-#
-scp $1 build3:/home/zuav/src/trustedarm/recipes/busybox/busybox-1.15.3/trustedarm/defconfig

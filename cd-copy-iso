@@ -1,2 +1,0 @@
-#!/bin/sh
-/bin/dd bs=64k if=/dev/cdrom of=$1
